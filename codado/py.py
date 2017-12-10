@@ -20,7 +20,7 @@ import attr
 import ftfy
 
 
-EMOJI = u'👻👾🤖😼💫👒🎩🐶🦎🐚🌸🌲🍋🥝🥑🥐🍿🥄⛺🚂🚲🌈🏆🎵💡✏🖍📌🛡♻'
+EMOJI = '👻👾🤖😼💫👒🎩🐶🦎🐚🌸🌲🍋🥝🥑🥐🍿🥄⛺🚂🚲🌈🏆🎵💡✏🖍📌🛡♻'
 
 
 @attr.s
@@ -53,14 +53,14 @@ class Documentation(object):
         With `decode=True`, decode docstrings as utf-8, then run them through ftfy, and return unicode.
         """
         if obj.__doc__ is None:
-            return cls(u'' if decode else '')
+            return cls('' if decode else '')
         r = cls.fromString(obj.__doc__, decode=decode)
         return r
 
     @classmethod
     def fromString(cls, s, decode=None):
         out = inspect.cleandoc(s)
-        if not decode or isinstance(out, unicode):
+        if not decode or isinstance(out, str):
             return cls(out)
         else:
             return cls(ftfy.fix_encoding(out.decode('utf-8')))
@@ -84,7 +84,7 @@ def eachMethod(decorator, methodFilter=lambda fName: True):
     methodFilter can also be simply a string prefix. If it is a string, it is
     assumed to be the prefix we're looking for.
     """
-    if isinstance(methodFilter, basestring):
+    if isinstance(methodFilter, str):
         # Is it a string? If it is, change it into a function that takes a string.
         prefix = methodFilter
         methodFilter = lambda fName: fName.startswith(prefix)
@@ -92,11 +92,11 @@ def eachMethod(decorator, methodFilter=lambda fName: True):
     def innerDeco(cls):
         for fName, fn in inspect.getmembers(cls):
             if type(fn) is types.MethodType and methodFilter(fName):
-                if fn.im_self is None:
+                if fn.__self__ is None:
                     # this is an unbound instance method
                     setattr(cls, fName, decorator(fn))
                 else:
-                    assert fn.im_class is type, "This should be a classmethod but it doesn't look like one: %r" % fName
+                    assert fn.__self__.__class__ is type, "This should be a classmethod but it doesn't look like one: %r" % fName
                     setattr(cls, fName, classmethod(decorator(fn)))
 
         return cls
@@ -236,7 +236,7 @@ def parseDate(dateString, strict=True):
     if (not strict) and (not dateString):
         return None
 
-    if not isinstance(dateString, basestring):
+    if not isinstance(dateString, str):
         raise TypeError('%r is not a string' % dateString)
 
     return parser.parse(dateString)
@@ -272,11 +272,11 @@ class LottaPatches(object):
 
     def __enter__(self):
         mocks = {}
-        for name, p in self.patchers.items():
+        for name, p in list(self.patchers.items()):
             mocks[name] = p.start()
 
         return Mock(**mocks)
 
     def __exit__(self, type, value, tb):
-        for p in self.patchers.values():
+        for p in list(self.patchers.values()):
             p.stop()

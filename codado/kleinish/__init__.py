@@ -19,5 +19,5 @@ yaml.add_representer(openapi.OpenAPI, openapi.representCleanOpenAPIObjects)
 yaml.add_representer(openapi.OpenAPIInfo, openapi.representCleanOpenAPIObjects)
 yaml.add_representer(openapi.UnsortableOrderedDict, yaml.representer.SafeRepresenter.represent_dict)
 
-yaml.add_representer(unicode, urltool.literal_unicode_representer)
+yaml.add_representer(str, urltool.literal_unicode_representer)
 yaml.add_representer(str, urltool.literal_unicode_representer)

@@ -5,7 +5,7 @@ import shlex
 import re
 import sys
 from contextlib import contextmanager
-from cStringIO import StringIO
+from io import StringIO
 
 from mock import patch
 
@@ -72,7 +72,7 @@ class MainTest(unittest.TestCase):
                 if 'error' in self['ret']:
                     raise tx.CLIError('o', 1, 'This is an error!')
 
-                print self['ret']
+                print(self['ret'])
 
         O.__name__ = name
         return O
@@ -110,7 +110,7 @@ class MainTest(unittest.TestCase):
             self.assertEqual(exitCode, 1)
             ret = io.getvalue().strip()
             rx = re.compile(r'\*\* o exit 1: This is an error!', re.DOTALL)
-            self.assertRegexpMatches(ret, rx)
+            self.assertRegex(ret, rx)
 
         # handle UsageError with incorrect --flag parameter
         with self.patchIO() as io, pArgv:
@@ -119,7 +119,7 @@ class MainTest(unittest.TestCase):
             self.assertEqual(exitCode, 1)
             ret = io.getvalue().strip()
             rx = re.compile(r'Usage: o.*Say hello.*flag requires argument', re.DOTALL)
-            self.assertRegexpMatches(ret, rx)
+            self.assertRegex(ret, rx)
 
         # use sys.argv and succeed
         with self.patchIO() as io, pArgv:
@@ -148,15 +148,15 @@ class MainTest(unittest.TestCase):
         with self.patchIO() as io, pArgv:
             exit = HasSub().main(["sub", "dsfasdfadf"])
             val = io.getvalue().strip()
-            self.assertRegexpMatches(val, r'Usage: o i am sub synopsis')
+            self.assertRegex(val, r'Usage: o i am sub synopsis')
             self.assertEqual(exit, 1)
 
         with self.patchIO() as io, pArgv, pExit as mExit:
             opt = HasSub()
             exit = opt.main(["sub", "--help"])
             val = io.getvalue().strip()
-            self.assertRegexpMatches(val, r'Usage: o i am sub synopsis')
-            self.assertRegexpMatches(val, r'I am sub longdesc')
+            self.assertRegex(val, r'Usage: o i am sub synopsis')
+            self.assertRegex(val, r'I am sub longdesc')
             self.assertEqual(exit, 0)
             mExit.assert_called_once_with(0)
 

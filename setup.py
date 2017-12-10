@@ -3,7 +3,7 @@ from inspect import cleandoc
 from setuptools import setup
 
 _version = {}
-execfile('codado/_version.py', _version)
+exec(compile(open('codado/_version.py').read(), 'codado/_version.py', 'exec'), _version)
 
 setup(
     name = 'Codado',

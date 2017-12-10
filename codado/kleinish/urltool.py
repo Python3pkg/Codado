@@ -73,7 +73,7 @@ class Options(Main):
                 openapi3.paths[pathPath].merge(pathItem)
             else:
                 openapi3.paths[pathPath] = pathItem
-        print yaml.dump(openapi3, default_flow_style=False)
+        print(yaml.dump(openapi3, default_flow_style=False))
 
 
 @attr.s
@@ -194,6 +194,6 @@ def literal_unicode_representer(dumper, data):
     Use |- literal syntax for long strings
     """
     if '\n' in data:
-        return dumper.represent_scalar(u'tag:yaml.org,2002:str', data, style='|')
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
     else:
-        return dumper.represent_scalar(u'tag:yaml.org,2002:str', data)
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data)

@@ -29,7 +29,7 @@ def test_documentation():
         """
 
     class Unicls(object):
-        u"""
+        """
         I have a unicode docstring
         """
 
@@ -41,10 +41,10 @@ def test_documentation():
     assert py.doc(Cls) == "I have a bytestr docstring"
 
     assert py.Documentation.fromObject(Cls).full == "I have a bytestr docstring\n\nIt is 2 lines"
-    assert isinstance(py.Documentation.fromObject(Unicls).first, unicode)
+    assert isinstance(py.Documentation.fromObject(Unicls).first, str)
     strDoc = py.Documentation.fromObject(StrClsWithUTF8, decode=True)
-    assert strDoc.first == u'I have a 😼💫 docstring'
-    assert isinstance(strDoc.first, unicode)
+    assert strDoc.first == 'I have a 😼💫 docstring'
+    assert isinstance(strDoc.first, str)
 
 
 def test_fromdir():
@@ -61,7 +61,7 @@ def test_fromdir():
 
     parent = os.path.dirname(cwd)
     fromparent = py.fromdir(parent)
-    print fromparent('')
+    print(fromparent(''))
 
     # callable joins files, and,
     # a fromdir() instance with a file argument acts like sibpath
@@ -105,7 +105,7 @@ def test_eachMethod():
     Does eachMethod properly handle arguments the function is called with?
     """
     def deco(fn):
-        fClass = fn.im_class
+        fClass = fn.__self__.__class__
 
         if fClass is type:
             @wraps(fn)
@@ -171,7 +171,7 @@ def test_remoji():
     """
     for n in range(100):
         choice = py.remoji() + py.remoji()
-        assert isinstance(choice, unicode)
+        assert isinstance(choice, str)
         assert len(choice) == 2
         assert choice[1] in py.EMOJI
 
